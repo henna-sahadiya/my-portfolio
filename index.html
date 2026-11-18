@@ -23,6 +23,7 @@
         <a href="#skills">Skills</a>
         <a href="#projects">Projects</a>
         <a href="#experience">Experience</a>
+        <a href="#certificates">Certificates</a>
         <a href="#contact">Contact</a>
       </div>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
@@ -95,6 +96,7 @@
             <article class="skill-group"><h3>Tools &amp; DevOps</h3><div class="skill-tags"><span class="tag">Git</span><span class="tag">GitHub</span><span class="tag">Docker</span></div></article>
             <article class="skill-group"><h3>Design</h3><div class="skill-tags"><span class="tag">Figma</span></div></article>
             <article class="skill-group"><h3>Methodology</h3><div class="skill-tags"><span class="tag">Agile / Scrum</span><span class="tag">RESTful API design</span></div></article>
+            <article class="skill-group"><h3>AI tools</h3><ul class="skill-tags"><li class="tag">GitHub Copilot</li><li class="tag">Claude Code</li><li class="tag">ChatGPT</li><li class="tag">Claude AI</li><li class="tag">Cursor</li></ul></article>
           </div>
         </div>
       </section>
@@ -203,6 +205,54 @@
         </div>
       </section>
 
+      <section class="section certificates-section" id="certificates">
+        <div class="wrap">
+          <div class="section-heading">
+            <span class="eyebrow">Learning &amp; growth</span>
+            <h2>Certificates &amp; training</h2>
+            <p>Courses, workshops and events that have shaped my development journey.</p>
+          </div>
+          <div class="certificates-grid">
+            <button class="certificate-card" type="button" data-f="" aria-haspopup="dialog">
+              <span class="certificate-meta">120 HOURS</span>
+              <h3>Full Stack Java Development</h3>
+              <span class="certificate-org">Know-Up Knowledge Foundation</span>
+              <span class="certificate-action">View certificate</span>
+            </button>
+            <button class="certificate-card" type="button" data-f="" aria-haspopup="dialog">
+              <span class="certificate-meta">2024 · ON-THE-JOB TRAINING</span>
+              <h3>Front-End Development (Angular 17)</h3>
+              <span class="certificate-org">Nest Digital, Kakkanad</span>
+              <span class="certificate-action">View certificate</span>
+            </button>
+            <button class="certificate-card" type="button" data-f="" aria-haspopup="dialog">
+              <span class="certificate-meta">DDU-GKY</span>
+              <h3>Back-End Development (Laravel, MVC)</h3>
+              <span class="certificate-org">Sparx RUDS, Kozhikode</span>
+              <span class="certificate-action">View certificate</span>
+            </button>
+            <button class="certificate-card" type="button" data-f="assets/certificates/keltron_certificate.pdf" aria-haspopup="dialog">
+              <span class="certificate-meta">TRAINING</span>
+              <h3>Python Programming Basics</h3>
+              <span class="certificate-org">Keletron Knowledge Centre</span>
+              <span class="certificate-action">View certificate</span>
+            </button>
+            <button class="certificate-card" type="button" data-f="assets/certificates/machine_learning.pdf" aria-haspopup="dialog">
+              <span class="certificate-meta">WORKSHOP</span>
+              <h3>Machine Learning workshop</h3>
+              <span class="certificate-org">CEV</span>
+              <span class="certificate-action">View certificate</span>
+            </button>
+            <button class="certificate-card" type="button" data-f="" aria-haspopup="dialog">
+              <span class="certificate-meta">CONFERENCE</span>
+              <h3>Twelfth National Conference on Innovation in IT</h3>
+              <span class="certificate-org">Bannari Amman Institute of Technology, Tamil Nadu</span>
+              <span class="certificate-action">View certificate</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
       <section class="section" id="contact">
         <div class="wrap">
           <div class="contact-card">
@@ -221,6 +271,17 @@
         </div>
       </section>
     </div>
+
+    <dialog class="certificate-dialog" id="certificate-dialog" role="dialog" aria-modal="true" aria-labelledby="certificate-dialog-title">
+      <div class="certificate-dialog-head">
+        <div>
+          <span class="eyebrow">Certificate</span>
+          <h2 id="certificate-dialog-title"></h2>
+        </div>
+        <button class="button certificate-dialog-close" id="certificate-dialog-close" type="button">Close</button>
+      </div>
+      <div class="certificate-preview" id="certificate-preview"></div>
+    </dialog>
 
     <section class="detail-view wrap" id="project-view" hidden aria-live="polite"></section>
     <section class="not-found wrap" id="not-found-view" hidden>
@@ -442,6 +503,61 @@
           });
           projectCount.textContent = `${String(visibleCount).padStart(2, "0")} ${visibleCount === 1 ? "project" : "projects"}`;
         });
+      });
+
+      const certificateDialog = document.getElementById("certificate-dialog");
+      const certificateDialogTitle = document.getElementById("certificate-dialog-title");
+      const certificateDialogClose = document.getElementById("certificate-dialog-close");
+      const certificatePreview = document.getElementById("certificate-preview");
+      let certificateTrigger = null;
+
+      function showCertificateMessage(message) {
+        const paragraph = document.createElement("p");
+        paragraph.className = "certificate-message";
+        paragraph.textContent = message;
+        certificatePreview.replaceChildren(paragraph);
+      }
+
+      document.querySelectorAll(".certificate-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          certificateTrigger = card;
+          const title = card.querySelector("h3").textContent;
+          const filePath = card.dataset.f.trim();
+          certificateDialogTitle.textContent = title;
+          certificatePreview.replaceChildren();
+
+          if (!filePath) {
+            showCertificateMessage("Certificate file not added yet.");
+          } else if (/\.pdf(?:$|[?#])/i.test(filePath)) {
+            const frame = document.createElement("iframe");
+            frame.title = `Certificate: ${title}`;
+            frame.src = filePath;
+            certificatePreview.append(frame);
+          } else if (/\.(?:png|jpe?g|gif|webp|svg|bmp)(?:$|[?#])/i.test(filePath)) {
+            const image = document.createElement("img");
+            image.alt = `Certificate: ${title}`;
+            image.src = filePath;
+            image.addEventListener("error", () => showCertificateMessage("Certificate preview could not be loaded."));
+            certificatePreview.append(image);
+          } else {
+            showCertificateMessage("Certificate preview is unavailable for this file type.");
+          }
+
+          certificateDialog.showModal();
+          certificateDialogClose.focus();
+        });
+      });
+
+      certificateDialogClose.addEventListener("click", () => certificateDialog.close());
+      certificateDialog.addEventListener("click", (event) => {
+        if (event.target !== certificateDialog) return;
+        const bounds = certificateDialog.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) {
+          certificateDialog.close();
+        }
+      });
+      certificateDialog.addEventListener("close", () => {
+        if (certificateTrigger) certificateTrigger.focus();
       });
 
       document.getElementById("current-year").textContent = String(new Date().getFullYear());
